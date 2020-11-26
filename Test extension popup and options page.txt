@@ -1,0 +1,55 @@
+1) Test an extension popup page and options page
+
+TestCase Description: I have used Google Dictionary Chrome extension to search for a word "Cases" and generate a Hindi output of the meaning.
+
+
+Pre-Requisities: 
+1: I have used Google Dictionary Chrome extension in this test.
+2: This testcase can be run on any IDE supporting selenium webdriver library and python, I have used Pycharm here.
+3: a. Install Google Dictionary extension from Chrome webstore.
+   b. Open URL: chrome://extensions/. This will show you a list of installed extensions on your Chrome.
+   c. Tick the Developer Mode checkbox. This will show you the ID of each extension installed on your Chrome       browser.
+   d. Select Pack extension and specify the extension root directory(Eg:C:\Users\dhawar1\AppData\Local     \Google\Chrome\User Data\Default\Extensions\mgijmajocgfcbeboacabfgobmjgjcoja\4.1.5_0) to generate a crx      file of extension.
+   e. Copy the .crx file to the same location as Python Project, I named it as app.crx
+
+4: Add extensions to ChromeBrowser using chromeOptions class by specifying .crx file.
+5: I have Tested extension popup with getdata() method for word "Cases".
+6: I have also Tested options page and generated English to Hindi conversion of the specfied word.
+ 
+Test Script:
+
+# libraries
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
+
+# method to popup google dictionary extension
+def getdata(self):
+    driver.get(
+        "chrome-extension://mgijmajocgfcbeboacabfgobmjgjcoja/browser_action.html")
+    driver.find_element_by_id("query-field").send_keys("Cases")
+    driver.find_element_by_xpath('//*[@id="define-btn"]').click()
+    # explicit wait until search result id displayed
+    wait = WebDriverWait(driver, 30).until(method=EC.presence_of_element_located((By.CLASS_NAME, "headword-box")))
+
+# add extension to remote chrome browser
+opt = ChromeOptions()
+opt.add_extension("app.crx")
+# path to chromedriver.exe
+driver = webdriver.Chrome(executable_path="C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe", options = opt)
+getdata(driver)
+
+# testing options page of Google Dict
+driver.get("chrome-extension://mgijmajocgfcbeboacabfgobmjgjcoja/options.html")
+langsel = Select(driver.find_element_by_id("language-selector"))
+langsel.select_by_visible_text('Hindi')
+driver.find_element_by_xpath('//*[@id="save-btn"]').click()
+getdata(driver)
+
+
+
+
+ 
